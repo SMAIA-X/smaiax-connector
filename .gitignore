@@ -1,0 +1,57 @@
+﻿# Build artifacts
+bin/
+obj/
+
+# Rider IDE files
+.idea/
+*.sln.iml
+
+# Visual Studio files
+.vscode/
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# DotNet CLI generated files
+project.lock.json
+project.fragment.lock.json
+
+# NuGet packages
+*.nupkg
+packages/
+*.snupkg
+
+# Resharper files
+_ReSharper*/
+*.DotSettings.user
+
+# Rider files
+.idea/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/modules.xml
+.idea/.idea-name
+.idea/**/targets/
+.idea/.rider.run.xml
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Azure Functions generated local settings
+local.settings.json
+
+# Others
+*.bak
+*.tmp
+*.temp
