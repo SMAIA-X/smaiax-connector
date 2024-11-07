@@ -5,6 +5,18 @@
     build:
       context: .
       dockerfile: Dockerfile
+  postgres:
+    image: postgres:16-bullseye
+    container_name: "smaiax-backend-db"
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: smaiax-db
+    networks:
+      - smaiax-backend-network
   hivemq:
     image: hivemq/hivemq4
     container_name: hivemq
@@ -21,3 +33,8 @@
       interval: 10s
       timeout: 5s
       retries: 5
+      
+networks:
+  smaiax-backend-network:
+    name: "smaiax-backend-network"
+    driver: bridge
