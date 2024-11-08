@@ -6,7 +6,7 @@
       context: .
       dockerfile: Dockerfile
   postgres:
-    image: postgres:16-bullseye
+    image: timescale/timescaledb:latest-pg16
     container_name: "smaiax-backend-db"
     restart: always
     ports:

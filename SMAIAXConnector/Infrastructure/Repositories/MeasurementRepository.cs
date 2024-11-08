@@ -19,12 +19,12 @@ public class MeasurementRepository :IMeasurementRepository
         try
         {
             string sql = @"
-                INSERT INTO ""MeasurementData"" (
-                    ""SmartMeterId"", ""Uptime"", ""Timestamp"", ""PositiveActivePower"", 
-                    ""PositiveActiveEnergyTotal"", ""NegativeActivePower"", 
-                    ""NegativeActiveEnergyTotal"", ""ReactiveEnergyQuadrant1Total"", 
-                    ""ReactiveEnergyQuadrant3Total"", ""TotalPower"", ""CurrentPhase1"", 
-                    ""VoltagePhase1"", ""CurrentPhase2"", ""VoltagePhase2"", ""CurrentPhase3"", ""VoltagePhase3""
+                INSERT INTO ""measurementData"" (
+                    ""smartMeterId"", ""uptime"", ""timestamp"", ""positiveActivePower"", 
+                    ""positiveActiveEnergyTotal"", ""negativeActivePower"", 
+                    ""negativeActiveEnergyTotal"", ""reactiveEnergyQuadrant1Total"", 
+                    ""reactiveEnergyQuadrant3Total"", ""totalPower"", ""currentPhase1"", 
+                    ""voltagePhase1"", ""currentPhase2"", ""voltagePhase2"", ""currentPhase3"", ""voltagePhase3""
                 ) 
                 VALUES (
                     @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, 

@@ -32,6 +32,7 @@ class Program
         var applicationDbContext = services.GetRequiredService<ApplicationDbContext>();
         await applicationDbContext.Database.EnsureDeletedAsync();
         await applicationDbContext.Database.EnsureCreatedAsync();
+        applicationDbContext.EnsureHypertable();
         await host.RunAsync(); 
     }
 }

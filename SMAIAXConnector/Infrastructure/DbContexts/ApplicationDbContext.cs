@@ -9,7 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-        //optionsBuilder.UseCamelCaseNamingConvention();
+        optionsBuilder.UseCamelCaseNamingConvention();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -17,14 +17,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new MeasurementDataConfiguration());
-        
-        //ConvertToHypertable();
     }
 
-    private void ConvertToHypertable()
+    public void EnsureHypertable()
     {
-        Database.ExecuteSqlRaw(@"
-                SELECT create_hypertable('Measurements', 'Timestamp', if_not_exists => TRUE);
-            ");
+        var hypertableQuery = @"
+                SELECT create_hypertable('""measurementData""', 'timestamp', if_not_exists => TRUE);
+            ";
+
+        // Execute SQL to create hypertable if it doesn’t already exist
+        Database.ExecuteSqlRaw(hypertableQuery);
     }
 }

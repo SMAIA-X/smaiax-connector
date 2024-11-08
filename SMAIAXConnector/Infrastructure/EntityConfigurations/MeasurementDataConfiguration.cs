@@ -10,7 +10,7 @@ public class MeasurementDataConfiguration : IEntityTypeConfiguration<Measurement
     {
         
         // Define Id as the primary key with auto-increment
-        builder.HasKey(e => e.Id);
+        builder.HasKey(e => new { e.Id, e.Timestamp });
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
 
         builder.Property(e => e.SmartMeterId)
