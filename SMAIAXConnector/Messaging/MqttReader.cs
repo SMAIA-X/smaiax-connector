@@ -2,10 +2,13 @@
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
+using Newtonsoft.Json;
+using SMAIAXConnector.Domain;
+using SMAIAXConnector.Domain.Interfaces;
 
 namespace SMAIAXConnector.Messaging;
 
-public class MqttReader(IOptions<MqttSettings> mqttSettings) : IMqttReader
+public class MqttReader(IOptions<MqttSettings> mqttSettings, IMeasurementRepository measurementRepository) : IMqttReader
 {
     private IMqttClient? _mqttClient;
 
@@ -43,11 +46,17 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings) : IMqttReader
         };
 
         // Handle received messages
-        _mqttClient.ApplicationMessageReceivedAsync += e =>
+        _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
             string message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
-            Console.WriteLine($"Received message: {message} on topic: {e.ApplicationMessage.Topic}");
-            return Task.CompletedTask;
+            var measurement = JsonConvert.DeserializeObject<MeasurementData>(message);
+            Console.WriteLine($"Received Measurement: {measurement}");
+
+            // Send to database
+            if (measurement != null)
+            {
+                await measurementRepository.AddMeasurementAsync(measurement);
+            }
         };
 
         // Start connection
