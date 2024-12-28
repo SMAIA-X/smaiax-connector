@@ -2,11 +2,11 @@ using Newtonsoft.Json;
 
 namespace SMAIAXConnector.Domain;
 
-public class MeasurementData
+public class Measurement
 {
     public int Id { get; set; } // Auto-incremented primary key
 
-    public string SmartMeterId { get; set; }
+    public Guid SmartMeterId { get; set; }
     
     public string Uptime { get; set; } = "";
     public DateTime Timestamp { get; set; }

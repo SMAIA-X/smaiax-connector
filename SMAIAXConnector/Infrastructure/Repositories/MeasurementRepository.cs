@@ -1,53 +1,52 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using SMAIAXConnector.Domain;
 using SMAIAXConnector.Domain.Interfaces;
-using SMAIAXConnector.Infrastructure.DbContexts;
 
 namespace SMAIAXConnector.Infrastructure.Repositories;
 
-public class MeasurementRepository :IMeasurementRepository
+public class MeasurementRepository(DbContext dbContext) : IMeasurementRepository
 {
-    private readonly ApplicationDbContext _dbContext;
-
-    public MeasurementRepository(ApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
-    public async Task AddMeasurementAsync(MeasurementData measurement)
+    public async Task AddMeasurementAsync(Measurement measurement)
     {
         try
         {
-            string sql = @"
-                INSERT INTO ""measurementData"" (
-                    ""smartMeterId"", ""uptime"", ""timestamp"", ""positiveActivePower"", 
-                    ""positiveActiveEnergyTotal"", ""negativeActivePower"", 
-                    ""negativeActiveEnergyTotal"", ""reactiveEnergyQuadrant1Total"", 
-                    ""reactiveEnergyQuadrant3Total"", ""totalPower"", ""currentPhase1"", 
-                    ""voltagePhase1"", ""currentPhase2"", ""voltagePhase2"", ""currentPhase3"", ""voltagePhase3""
-                ) 
-                VALUES (
-                    @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, 
-                    @p10, @p11, @p12, @p13, @p14, @p15
-                )";
-            await _dbContext.Database.ExecuteSqlRawAsync(sql,
-                measurement.SmartMeterId,
-                measurement.Uptime,
-                measurement.Timestamp,
-                measurement.PositiveActivePower,
-                measurement.PositiveActiveEnergyTotal,
-                measurement.NegativeActivePower,
-                measurement.NegativeActiveEnergyTotal,
-                measurement.ReactiveEnergyQuadrant1Total,
-                measurement.ReactiveEnergyQuadrant3Total,
-                measurement.TotalPower,
-                measurement.CurrentPhase1,
-                measurement.VoltagePhase1,
-                measurement.CurrentPhase2,
-                measurement.VoltagePhase2,
-                measurement.CurrentPhase3,
-                measurement.VoltagePhase3
-            );
+            // Can't be inserted via "AddAsync".
+            await dbContext.Database.OpenConnectionAsync();
+            var sql = @"INSERT INTO domain.""Measurement""
+              (""positiveActivePower"", ""positiveActiveEnergyTotal"", ""negativeActivePower"", ""negativeActiveEnergyTotal"", ""reactiveEnergyQuadrant1Total"",
+               ""reactiveEnergyQuadrant3Total"", ""totalPower"", ""currentPhase1"", ""voltagePhase1"", ""currentPhase2"", ""voltagePhase2"", ""currentPhase3"",
+               ""voltagePhase3"", ""uptime"", ""timestamp"", ""smartMeterId"")
+              VALUES (@positiveActivePower, @positiveActiveEnergyTotal, @negativeActivePower, @negativeActiveEnergyTotal, @reactiveEnergyQuadrant1Total,
+                      @reactiveEnergyQuadrant3Total, @totalPower, @currentPhase1, @voltagePhase1, @currentPhase2, @voltagePhase2, @currentPhase3, @voltagePhase3,
+                      @uptime, @timestamp, @smartMeterId);";
+
+            await using var insertCommand = dbContext.Database.GetDbConnection().CreateCommand();
+            insertCommand.CommandText = sql;
+
+            insertCommand.Parameters.Add(new NpgsqlParameter("@positiveActivePower", measurement.PositiveActivePower));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@positiveActiveEnergyTotal",
+                measurement.PositiveActiveEnergyTotal));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@negativeActivePower", measurement.NegativeActivePower));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@negativeActiveEnergyTotal",
+                measurement.NegativeActiveEnergyTotal));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@reactiveEnergyQuadrant1Total",
+                measurement.ReactiveEnergyQuadrant1Total));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@reactiveEnergyQuadrant3Total",
+                measurement.ReactiveEnergyQuadrant3Total));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@totalPower", measurement.TotalPower));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@currentPhase1", measurement.CurrentPhase1));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@voltagePhase1", measurement.VoltagePhase1));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@currentPhase2", measurement.CurrentPhase2));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@voltagePhase2", measurement.VoltagePhase2));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@currentPhase3", measurement.CurrentPhase3));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@voltagePhase3", measurement.VoltagePhase3));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@uptime", measurement.Uptime));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@timestamp", measurement.Timestamp));
+            insertCommand.Parameters.Add(new NpgsqlParameter("@smartMeterId", measurement.SmartMeterId));
+
+            await insertCommand.ExecuteNonQueryAsync();
+            await dbContext.Database.CloseConnectionAsync();
         }
         catch (Exception e)
         {
