@@ -18,16 +18,16 @@ class Program
             {
                 services.AddDbContext<DbContext>(options =>
                     options.UseNpgsql(context.Configuration.GetConnectionString("smaiax-db")));
-                
+
                 services.AddScoped<IMeasurementRepository, MeasurementRepository>();
                 services.AddHostedService<MessagingBackgroundService>();
                 services.Configure<MqttSettings>(context.Configuration.GetSection("MQTT"));
                 services.AddSingleton<IMqttReader, MqttReader>();
             })
             .Build();
-        
+
         var services = host.Services;
-        
-        await host.RunAsync(); 
+
+        await host.RunAsync();
     }
 }
