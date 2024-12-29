@@ -48,8 +48,8 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IMeasurementReposit
         // Handle received messages
         _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
-            string message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
-            var measurement = JsonConvert.DeserializeObject<MeasurementData>(message);
+            var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
+            var measurement = JsonConvert.DeserializeObject<Measurement>(message);
             Console.WriteLine($"Received Measurement: {measurement}");
 
             // Send to database
