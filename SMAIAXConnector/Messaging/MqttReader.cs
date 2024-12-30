@@ -8,7 +8,7 @@ using SMAIAXConnector.Domain.Interfaces;
 
 namespace SMAIAXConnector.Messaging;
 
-public class MqttReader(IOptions<MqttSettings> mqttSettings, IMeasurementRepository measurementRepository) : IMqttReader
+public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider services) : IMqttReader
 {
     private IMqttClient? _mqttClient;
 
@@ -55,6 +55,8 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IMeasurementReposit
             // Send to database
             if (measurement != null)
             {
+                using var scope = services.CreateScope();
+                var measurementRepository = scope.ServiceProvider.GetRequiredService<IMeasurementRepository>();
                 await measurementRepository.AddMeasurementAsync(measurement);
             }
         };

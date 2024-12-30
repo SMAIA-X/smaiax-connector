@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-
-namespace SMAIAXConnector.Messaging;
+﻿namespace SMAIAXConnector.Messaging;
 
 public class MessagingBackgroundService(IMqttReader mqttReader) : BackgroundService
 {
