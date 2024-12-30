@@ -5,6 +5,9 @@
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - smaiax-backend-network
+    
   postgres:
     image: timescale/timescaledb:latest-pg16
     container_name: "smaiax-backend-db"
@@ -17,6 +20,7 @@
       POSTGRES_DB: smaiax-db
     networks:
       - smaiax-backend-network
+
   rabbitmq:
     image: rabbitmq:4.0.2-management-alpine
     container_name: smaiax-mqtt-broker
@@ -33,6 +37,8 @@
       retries: 5
     command: >
       sh -c "rabbitmq-plugins enable rabbitmq_management rabbitmq_mqtt && rabbitmq-server"
+    networks:
+      - smaiax-backend-network
       
 networks:
   smaiax-backend-network:
