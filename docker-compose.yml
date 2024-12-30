@@ -5,6 +5,8 @@
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      DOTNET_ENVIRONMENT: DockerDevelopment
     networks:
       - smaiax-backend-network
     
