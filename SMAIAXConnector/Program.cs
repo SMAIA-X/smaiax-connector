@@ -1,33 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SMAIAXConnector.Domain.Interfaces;
 using SMAIAXConnector.Infrastructure.Repositories;
 using SMAIAXConnector.Messaging;
 
-namespace SMAIAXConnector;
+var builder = Host.CreateApplicationBuilder(args);
 
-class Program
-{
-    static async Task Main(string[] args)
-    {
+builder.Services.AddDbContext<DbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("smaiax-db")));
 
-        var host = Host.CreateDefaultBuilder(args)
-            .ConfigureServices((context, services) =>
-            {
-                services.AddDbContext<DbContext>(options =>
-                    options.UseNpgsql(context.Configuration.GetConnectionString("smaiax-db")));
+builder.Services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+builder.Services.AddHostedService<MessagingBackgroundService>();
+builder.Services.Configure<MqttSettings>(builder.Configuration.GetSection("MQTT"));
+builder.Services.AddSingleton<IMqttReader, MqttReader>();
 
-                services.AddScoped<IMeasurementRepository, MeasurementRepository>();
-                services.AddHostedService<MessagingBackgroundService>();
-                services.Configure<MqttSettings>(context.Configuration.GetSection("MQTT"));
-                services.AddSingleton<IMqttReader, MqttReader>();
-            })
-            .Build();
-
-        var services = host.Services;
-
-        await host.RunAsync();
-    }
-}
+var host = builder.Build();
+await host.RunAsync();
