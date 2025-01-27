@@ -8,7 +8,7 @@ using SMAIAXConnector.Domain.Interfaces;
 
 namespace SMAIAXConnector.Messaging;
 
-public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider services) : IMqttReader
+public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider services, ILogger<MqttReader> logger) : IMqttReader
 {
     private IMqttClient? _mqttClient;
 
@@ -27,21 +27,20 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider se
         // Connect to MQTT broker
         _mqttClient.ConnectedAsync += async e =>
         {
-            Console.WriteLine("Connected to MQTT broker!");
-
-            // Subscribe to the topic
+            logger.LogInformation("Connected to MQTT broker!");
+            
             var topicFilter = new MqttTopicFilterBuilder()
-                .WithTopic(mqttSettings.Value.Topic)
+                .WithTopic("#")
                 .Build();
 
             await _mqttClient.SubscribeAsync(topicFilter);
-            Console.WriteLine($"Subscribed to topic {mqttSettings.Value.Topic}");
+            logger.LogInformation("Subscribed to all topics.");
         };
 
         // Handle disconnection
         _mqttClient.DisconnectedAsync += e =>
         {
-            Console.WriteLine("Disconnected from MQTT broker.");
+            logger.LogInformation("Disconnected from MQTT broker.");
             return Task.CompletedTask;
         };
 
@@ -50,8 +49,8 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider se
         {
             var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
             var measurement = JsonConvert.DeserializeObject<Measurement>(message);
-            Console.WriteLine($"Received Measurement: {measurement}");
-
+            logger.LogDebug("Received Measurement: {Measurement}", measurement);
+            
             // Send to database
             if (measurement != null)
             {
@@ -70,7 +69,7 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider se
         if (_mqttClient != null && _mqttClient.IsConnected)
         {
             await _mqttClient.DisconnectAsync();
-            Console.WriteLine("Disconnected from MQTT broker.");
+            logger.LogInformation("Disconnected from MQTT broker.");
         }
     }
 }
