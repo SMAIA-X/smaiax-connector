@@ -28,14 +28,13 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider se
         _mqttClient.ConnectedAsync += async e =>
         {
             Console.WriteLine("Connected to MQTT broker!");
-
-            // Subscribe to the topic
+            
             var topicFilter = new MqttTopicFilterBuilder()
-                .WithTopic(mqttSettings.Value.Topic)
+                .WithTopic("#")
                 .Build();
 
             await _mqttClient.SubscribeAsync(topicFilter);
-            Console.WriteLine($"Subscribed to topic {mqttSettings.Value.Topic}");
+            Console.WriteLine($"Subscribed to topic all topics.");
         };
 
         // Handle disconnection
