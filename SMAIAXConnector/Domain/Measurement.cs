@@ -7,6 +7,7 @@ public class Measurement
     public int Id { get; set; } // Auto-incremented primary key
 
     public Guid SmartMeterId { get; set; }
+    public Guid TenantId { get; set; }
 
     public string Uptime { get; set; } = "";
     public DateTime Timestamp { get; set; }
@@ -40,6 +41,7 @@ public class Measurement
     public override string ToString()
     {
         return $"Device ID: {SmartMeterId} \n" +
+               $"Tenant ID: {TenantId} \n" +
                $"Positive Active Power (1.7.0): {PositiveActivePower} W\n" +
                $"Positive Active Energy Total (1.8.0): {PositiveActiveEnergyTotal} Wh\n" +
                $"Negative Active Power (2.7.0): {NegativeActivePower} W\n" +
