@@ -59,18 +59,19 @@ public class MqttReader(IOptions<MqttSettings> mqttSettings, IServiceProvider se
                     logger.LogError("Failed to deserialize message: {Message}", message);
                     return;
                 }
-            
+
                 using var scope = services.CreateScope();
-            
+
                 var tenantRepository = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
                 var tenantDatabaseName = await tenantRepository.GetTenantDatabaseNameAsync(measurement.TenantId);
-            
+
                 if (tenantDatabaseName == null)
                 {
-                    logger.LogError("Failed to get database name for tenant with id '{TenantId}'", measurement.TenantId);
+                    logger.LogError("Failed to get database name for tenant with id '{TenantId}'",
+                        measurement.TenantId);
                     return;
                 }
-            
+
                 var measurementRepository = scope.ServiceProvider.GetRequiredService<IMeasurementRepository>();
                 await measurementRepository.AddMeasurementAsync(measurement, tenantDatabaseName);
             }

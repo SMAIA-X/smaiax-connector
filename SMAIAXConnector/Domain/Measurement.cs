@@ -4,58 +4,41 @@ namespace SMAIAXConnector.Domain;
 
 public class Measurement
 {
-    public int Id { get; set; } // Auto-incremented primary key
+    [JsonProperty("smart_meter_id")] public Guid SmartMeterId { get; set; }
+    [JsonProperty("tenant_id")] public Guid TenantId { get; set; }
+    [JsonProperty("timestamp")] public DateTime Timestamp { get; set; }
+    [JsonProperty("voltage_phase_1")] public double VoltagePhase1 { get; set; }
+    [JsonProperty("voltage_phase_2")] public double VoltagePhase2 { get; set; }
+    [JsonProperty("voltage_phase_3")] public double VoltagePhase3 { get; set; }
+    [JsonProperty("current_phase_1")] public double CurrentPhase1 { get; set; }
+    [JsonProperty("current_phase_2")] public double CurrentPhase2 { get; set; }
+    [JsonProperty("current_phase_3")] public double CurrentPhase3 { get; set; }
 
-    public Guid SmartMeterId { get; set; }
-    public Guid TenantId { get; set; }
+    [JsonProperty("positive_active_power")]
+    public double PositiveActivePower { get; set; }
 
-    public string Uptime { get; set; } = "";
-    public DateTime Timestamp { get; set; }
+    [JsonProperty("negative_active_power")]
+    public double NegativeActivePower { get; set; }
 
-    [JsonProperty("1.7.0")] public double PositiveActivePower { get; set; }
+    [JsonProperty("positive_reactive_energy_total")]
+    public double PositiveReactiveEnergyTotal { get; set; }
 
-    [JsonProperty("1.8.0")] public double PositiveActiveEnergyTotal { get; set; }
+    [JsonProperty("negative_reactive_energy_total")]
+    public double NegativeReactiveEnergyTotal { get; set; }
 
-    [JsonProperty("2.7.0")] public double NegativeActivePower { get; set; }
+    [JsonProperty("positive_active_energy_total")]
+    public double PositiveActiveEnergyTotal { get; set; }
 
-    [JsonProperty("2.8.0")] public double NegativeActiveEnergyTotal { get; set; }
-
-    [JsonProperty("3.8.0")] public double ReactiveEnergyQuadrant1Total { get; set; }
-
-    [JsonProperty("4.8.0")] public double ReactiveEnergyQuadrant3Total { get; set; }
-
-    [JsonProperty("16.7.0")] public double TotalPower { get; set; }
-
-    [JsonProperty("31.7.0")] public double CurrentPhase1 { get; set; }
-
-    [JsonProperty("32.7.0")] public double VoltagePhase1 { get; set; }
-
-    [JsonProperty("51.7.0")] public double CurrentPhase2 { get; set; }
-
-    [JsonProperty("52.7.0")] public double VoltagePhase2 { get; set; }
-
-    [JsonProperty("71.7.0")] public double CurrentPhase3 { get; set; }
-
-    [JsonProperty("72.7.0")] public double VoltagePhase3 { get; set; }
+    [JsonProperty("negative_active_energy_total")]
+    public double NegativeActiveEnergyTotal { get; set; }
 
     public override string ToString()
     {
-        return $"Device ID: {SmartMeterId} \n" +
-               $"Tenant ID: {TenantId} \n" +
-               $"Positive Active Power (1.7.0): {PositiveActivePower} W\n" +
-               $"Positive Active Energy Total (1.8.0): {PositiveActiveEnergyTotal} Wh\n" +
-               $"Negative Active Power (2.7.0): {NegativeActivePower} W\n" +
-               $"Negative Active Energy Total (2.8.0): {NegativeActiveEnergyTotal} Wh\n" +
-               $"Reactive Energy Quadrant 1 Total (3.8.0): {ReactiveEnergyQuadrant1Total} VArh\n" +
-               $"Reactive Energy Quadrant 3 Total (4.8.0): {ReactiveEnergyQuadrant3Total} VArh\n" +
-               $"Total Power (16.7.0): {TotalPower} W\n" +
-               $"Current Phase 1 (31.7.0): {CurrentPhase1} A\n" +
-               $"Voltage Phase 1 (32.7.0): {VoltagePhase1} V\n" +
-               $"Current Phase 2 (51.7.0): {CurrentPhase2} A\n" +
-               $"Voltage Phase 2 (52.7.0): {VoltagePhase2} V\n" +
-               $"Current Phase 3 (71.7.0): {CurrentPhase3} A\n" +
-               $"Voltage Phase 3 (72.7.0): {VoltagePhase3} V\n" +
-               $"Uptime: {Uptime}\n" +
-               $"Timestamp: {Timestamp}";
+        return $"SmartMeterId: {SmartMeterId},\nTenantId: {TenantId},\nTimestamp: {Timestamp},\n" +
+               $"VoltagePhase1: {VoltagePhase1},\nVoltagePhase2: {VoltagePhase2},\nVoltagePhase3: {VoltagePhase3},\n" +
+               $"CurrentPhase1: {CurrentPhase1},\nCurrentPhase2: {CurrentPhase2},\nCurrentPhase3: {CurrentPhase3},\n" +
+               $"PositiveActivePower: {PositiveActivePower},\nNegativeActivePower: {NegativeActivePower},\n" +
+               $"ReactiveEnergyQuadrant1Total: {PositiveReactiveEnergyTotal},\nReactiveEnergyQuadrant3Total: {NegativeReactiveEnergyTotal},\n" +
+               $"PositiveActiveEnergyTotal: {PositiveActiveEnergyTotal},\nNegativeActiveEnergyTotal: {NegativeActiveEnergyTotal}";
     }
 }
